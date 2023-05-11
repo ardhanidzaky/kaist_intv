@@ -5,7 +5,7 @@
 - **Paper reference:** Kim, Dae Hyun, Enamul Hoque, and Maneesh Agrawala. "Answering questions about charts and generating visual explanations." Proceedings of the 2020 CHI conference on human factors in computing systems. 2020. 
 
 - [x] Extract basic data and encoding.
-- [x] Extract basic data (.csv) and.
+- [x] Extract basic data (.csv) and encoding.
 - [ ] Transform data (.csv) based on encoding.
     - [ ] Encoding: 'aggregate'.
     - [ ] Encoding: 'timeUnit'.
