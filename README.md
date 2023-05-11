@@ -6,8 +6,8 @@
 
 - [x] Extract basic data and encoding.
 - [x] Extract basic data (.csv) and encoding.
-- [ ] Transform data (.csv) based on encoding.
-    - [ ] Encoding: 'aggregate'.
+- [ ] Transform data based on encoding.
+    - [x] Encoding: 'aggregate'.
     - [ ] Encoding: 'timeUnit'.
 - [ ] Supported mark.
     - [x] Mark: 'bar'.

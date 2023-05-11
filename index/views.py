@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import MyForm
-from .controller import router
+from .controller import base_router
 
 import pandas as pd
 
@@ -13,10 +13,10 @@ def index(request):
 
             if checkbox:
                 csv_upload = form.cleaned_data['csv_upload']
-                router(text_input=text_input, check_box=checkbox, data=pd.read_csv(csv_upload))
+                base_router(text_input=text_input, check_box=checkbox, data=pd.read_csv(csv_upload))
                 pd.read_csv(csv_upload).to_excel('uploaded.xlsx')
 
-            router(text_input=text_input, check_box=checkbox)
+            base_router(text_input=text_input, check_box=checkbox)
             return redirect('index')
     else:
         form = MyForm()

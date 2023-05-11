@@ -1,9 +1,6 @@
 import pandas as pd
 import json
 
-from openpyxl import Workbook
-from openpyxl.utils.dataframe import dataframe_to_rows
-
 from .consts import AXIS, VEGA_ENCODING
 
 def create_data_table(vega_json: str) -> pd.DataFrame:
@@ -37,20 +34,20 @@ def create_encoding_table(vega_json: str) -> pd.DataFrame:
     encoding_type_list = []
     encoding_value_list = []
 
-    for axs_ in AXIS:
-        for enc_ in VEGA_ENCODING:
-            if enc_ in vega_json['encoding'][axs_]:
-                axis_list.append(axs_)
-                encoding_type_list.append(enc_)
-                encoding_value_list.append(vega_json['encoding'][axs_][enc_])
+    for axs in AXIS:
+        for enc in VEGA_ENCODING:
+            if enc in vega_json['encoding'][axs]:
+                axis_list.append(axs)
+                encoding_type_list.append(enc)
+                encoding_value_list.append(vega_json['encoding'][axs][enc])
 
-    _data = pd.DataFrame({
+    data = pd.DataFrame({
         'axis': axis_list,
         'encoding_type': encoding_type_list,
         'encoding_value': encoding_value_list
     })
 
-    return _data
+    return data
 
 def combine(data: pd.DataFrame, encoding: pd.DataFrame):
     """

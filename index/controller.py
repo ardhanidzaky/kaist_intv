@@ -1,8 +1,9 @@
 import pandas as pd
 
 from .utils import *
+from .bar import utils as bar_utils
 
-def router(text_input: str, check_box: bool, data: pd.DataFrame=None):
+def base_router(text_input: str, check_box: bool, data: pd.DataFrame=None):
     """
     Route data to a data_on_csv() or data_on_json() function based on the value of check_box.
 
@@ -20,6 +21,9 @@ def router(text_input: str, check_box: bool, data: pd.DataFrame=None):
     else:
         data_on_json(text_input=text_input)
 
+def transform_router(encoding: pd.DataFrame):
+    return None
+
 def data_on_csv(text_input: str, data: pd.DataFrame):
     """
     Vega-lite specification pipeline for "data": {"url": "xxx.csv"}.
@@ -31,8 +35,8 @@ def data_on_csv(text_input: str, data: pd.DataFrame):
     Returns:
         None.
     """
-    _encoding_table = create_encoding_table(vega_json=text_input)
-    combine(data=data, encoding=_encoding_table)
+    encoding_table = create_encoding_table(vega_json=text_input)
+    combine(data=data, encoding=encoding_table)
 
 def data_on_json(text_input: str):
     """
@@ -44,6 +48,12 @@ def data_on_json(text_input: str):
     Returns:
         None.
     """
-    _data_table = create_data_table(vega_json=text_input)
-    _encoding_table = create_encoding_table(vega_json=text_input)
-    combine(data=_data_table, encoding=_encoding_table)
+
+    # Basic tables.
+    data_table = create_data_table(vega_json=text_input)
+    encoding_table = create_encoding_table(vega_json=text_input)
+
+    # Transformed tables.
+    bar_utils.create_data_encoding_agg_table(data=data_table, encoding=encoding_table)
+
+    combine(data=data_table, encoding=encoding_table)
