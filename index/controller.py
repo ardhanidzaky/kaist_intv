@@ -6,7 +6,7 @@ from .bar import utils as bar_utils
 
 def base_router(text_input: str, check_box: bool, data: pd.DataFrame=None):
     """
-    Route data to a data_on_csv() or data_on_json() function based on the value of check_box.
+    Check data routing based on the value of check_box.
 
     Args:
         text_input (str): Vega-lite JSON specification of the graph.
@@ -35,6 +35,18 @@ def base_router(text_input: str, check_box: bool, data: pd.DataFrame=None):
 def transform_router(
         mark_type: str, data: pd.DataFrame,
         encoding: pd.DataFrame=None, tranform: pd.DataFrame=None):
+    """
+    Route data transformation to a specific function based on the mark type.
+
+    Args:
+        mark_type (str): The type of mark to transform the data for ('bar', 'point', or 'line').
+        data (pd.DataFrame): A pandas DataFrame containing the data.
+        encoding (pd.DataFrame, optional): A pandas DataFrame containing the encoding information.
+        transform (pd.DataFrame, optional): A pandas DataFrame containing transformation rules.
+
+    Returns:
+        A pandas DataFrame with the transformed data.
+    """
 
     if mark_type == 'bar':
         enc_res_table = bar_utils.create_data_encoding_agg_table(
