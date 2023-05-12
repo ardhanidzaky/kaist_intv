@@ -6,10 +6,9 @@
 
 - [x] Extract raw data and encoding.
 - [x] Extract raw data (.csv) and encoding.
-- [ ] Transform data based on 'encoding' only.
-    - [ ] Encoding: 'aggregate'.
+- [x] Transform data based on 'encoding' only.
+    - [x] Encoding: 'aggregate'.
         - [x] One column aggregation.
-        - [ ] Two column aggregation
     - [x] Encoding: 'timeUnit'.
         - [x] Year
         - [x] Quarter

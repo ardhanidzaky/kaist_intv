@@ -13,10 +13,11 @@ def index(request):
 
             if checkbox:
                 csv_upload = form.cleaned_data['csv_upload']
-                base_router(text_input=text_input, check_box=checkbox, data=pd.read_csv(csv_upload))
-                pd.read_csv(csv_upload).to_excel('uploaded.xlsx')
-
-            base_router(text_input=text_input, check_box=checkbox)
+                csv_df = pd.read_csv(csv_upload)
+                base_router(text_input=text_input, check_box=checkbox, data=csv_df)
+            else:
+                base_router(text_input=text_input, check_box=checkbox)
+                
             return redirect('index')
     else:
         form = MyForm()

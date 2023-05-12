@@ -19,6 +19,7 @@ def base_router(text_input: str, check_box: bool, data: pd.DataFrame=None):
         data_table = data  
     else:
         data_table = global_utils.create_data_table(vega_json=text_input)
+    
     encoding_table = global_utils.create_encoding_table(vega_json=text_input)
     
     enc_res_table = global_utils.create_encoding_agg_table(
