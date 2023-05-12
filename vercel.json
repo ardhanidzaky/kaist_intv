@@ -1,6 +1,6 @@
 {
     "builds": [{
-        "src": "ppld/wsgi.py",
+        "src": "kaist_intv/wsgi.py",
         "use": "@vercel/python",
         "config": { 
             "maxLambdaSize": "15mb",
@@ -9,7 +9,7 @@
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "ppld/wsgi.py"
+            "dest": "kaist_intv/wsgi.py"
         }
     ]
 }
