@@ -4,7 +4,6 @@ from .forms import MyForm
 from .controller import base_router
 
 import pandas as pd
-import json
 
 def index(request):
     if request.method == 'POST':
