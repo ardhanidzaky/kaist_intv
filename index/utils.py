@@ -2,6 +2,7 @@ import pandas as pd
 import json
 
 from .consts import AXIS, VEGA_ENCODING
+from .encoding import aggregator as enc_agg
 
 def create_data_table(vega_json: str) -> pd.DataFrame:
     """
@@ -49,7 +50,8 @@ def create_encoding_table(vega_json: str) -> pd.DataFrame:
 
     return data
 
-def combine(data: pd.DataFrame, encoding: pd.DataFrame):
+def combine(data: pd.DataFrame, encoding: pd.DataFrame,
+            data_enc_res: pd.DataFrame):
     """
     Combine two pandas DataFrames and write them to an Excel file.
 
@@ -63,3 +65,20 @@ def combine(data: pd.DataFrame, encoding: pd.DataFrame):
     with pd.ExcelWriter('output.xlsx') as writer:
         data.to_excel(writer, sheet_name='Data', index=False)
         encoding.to_excel(writer, sheet_name='Encoding', index=False)
+        data_enc_res.to_excel(writer, sheet_name='Data Encoding-transformed', index=False)
+
+def create_encoding_agg_table(data: pd.DataFrame, encoding: pd.DataFrame) -> pd.DataFrame:
+    num_aggregate = data[data['encoding_type'] == 'aggregate'].shape[0]
+    num_timeunit = data[data['encoding_type'] == 'timeUnit'].shape[0]
+
+    enc_res_table = None
+
+    if num_aggregate == 1:
+        if num_timeunit == 0:
+            enc_res_table = enc_agg.one_aggregation(data=data, encoding=encoding)
+        else:
+            raise RuntimeError("Two encoding aggregations not supported yet!")
+    else:
+        enc_res_table = enc_agg.timeunit_aggregation(data=data, encoding=encoding)
+
+    return enc_res_table
