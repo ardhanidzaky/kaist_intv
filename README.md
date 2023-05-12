@@ -15,4 +15,5 @@
         - [x] Month
         - [x] Date
         - [x] Week
+    - [ ] Encoding: color (3rd grouping)
 - [ ] Transform data based on 'transform'
