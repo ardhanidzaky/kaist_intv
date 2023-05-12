@@ -68,6 +68,20 @@ def combine(data: pd.DataFrame, encoding: pd.DataFrame,
         data_enc_res.to_excel(writer, sheet_name='Data Encoding-transformed')
 
 def create_encoding_agg_table(data: pd.DataFrame, encoding: pd.DataFrame) -> pd.DataFrame:
+    """
+    Create an encoding aggregation table based on the given data and encoding information.
+
+    Args:
+        data: A pandas DataFrame containing the data to be aggregated.
+        encoding: A pandas DataFrame containing the encoding information.
+
+    Returns:
+        A pandas DataFrame containing the encoding aggregation table.
+
+    Raises:
+        RuntimeError: If two encoding aggregations are specified in the encoding DataFrame, or if the
+                        specified aggregation type is not supported.
+    """
     num_aggregate = encoding[encoding['encoding_type'] == 'aggregate'].shape[0]
     num_timeunit = encoding[encoding['encoding_type'] == 'timeUnit'].shape[0]
 
