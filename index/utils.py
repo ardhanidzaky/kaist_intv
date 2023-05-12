@@ -4,6 +4,40 @@ import json
 from .consts import AXIS, VEGA_ENCODING
 from .encoding import aggregator as enc_agg
 
+def convert_datetime_to_str(val):
+    """
+    Converts a Pandas Timestamp object to a string representation in the format '%Y-%m-%d'.
+    If the input value is not a Timestamp object, returns the input value unchanged.
+
+    Args:
+        val (any): The value to convert.
+
+    Returns:
+        str or any: The converted value as a string, or the input value unchanged.
+    """
+    if isinstance(val, pd.Timestamp):
+        return val.strftime('%Y-%m-%d')
+    else:
+        return val
+
+def update_data(json_data: str, uploaded_df: pd.DataFrame) -> str:
+    """
+    Update the JSON data with the uploaded dataframe and return the updated JSON string.
+
+    Args:
+        json_data (str): JSON string to be updated.
+        uploaded_df (pd.DataFrame): Uploaded dataframe to be added to the JSON.
+
+    Returns:
+        str: Updated JSON string with the uploaded dataframe added to the 'values' field of the 'data' dictionary.
+    """
+    data_dict = json.loads(json_data)
+    uploaded_df = uploaded_df.applymap(convert_datetime_to_str)
+
+    data_dict["data"] = {"values": uploaded_df.to_dict('records')}
+    updated_json = json.dumps(data_dict)
+    return updated_json
+
 def create_data_table(vega_json: str) -> pd.DataFrame:
     """
     Convert a Vega JSON data object into a pandas DataFrame.
@@ -65,7 +99,8 @@ def combine(data: pd.DataFrame, encoding: pd.DataFrame,
     with pd.ExcelWriter('output.xlsx') as writer:
         data.to_excel(writer, sheet_name='Data', index=False)
         encoding.to_excel(writer, sheet_name='Encoding', index=False)
-        data_enc_res.to_excel(writer, sheet_name='Data Encoding-transformed')
+        if data_enc_res is not None:
+            data_enc_res.to_excel(writer, sheet_name='Data Encoding-transformed')
 
 def create_encoding_agg_table(data: pd.DataFrame, encoding: pd.DataFrame) -> pd.DataFrame:
     """
@@ -92,7 +127,5 @@ def create_encoding_agg_table(data: pd.DataFrame, encoding: pd.DataFrame) -> pd.
             enc_res_table = enc_agg.basic_aggregation(data=data, encoding=encoding)
         else:
             enc_res_table = enc_agg.timeunit_aggregation(data=data, encoding=encoding)
-    else:
-        raise RuntimeError("Two encoding aggregations not supported yet!")
 
     return enc_res_table

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
 from .forms import MyForm
 from .controller import base_router
+from .utils import update_data
 
 import pandas as pd
 
@@ -10,15 +10,16 @@ def index(request):
         form = MyForm(request.POST, request.FILES)
         if form.is_valid():
             text_input = form.cleaned_data['text_input']
-            request.session['vega_lite_spec'] = text_input
             checkbox = form.cleaned_data['check_box']
 
             if checkbox:
                 csv_upload = form.cleaned_data['csv_upload']
                 csv_df = pd.read_csv(csv_upload)
                 base_router(text_input=text_input, check_box=checkbox, data=csv_df)
+                request.session['vega_lite_spec'] = update_data(text_input, csv_df)
             else:
                 base_router(text_input=text_input, check_box=checkbox)
+                request.session['vega_lite_spec'] = text_input
             return redirect('index')
     else:
         form = MyForm()
