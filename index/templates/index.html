@@ -5,12 +5,93 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vega-lite Specification Converter</title>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F5F5F5;
+        }
+        form {
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            text-align: center;
+        }
+        .form-label {
+            font-weight: bold;
+            margin-top: 20px;
+            display: block;
+        }
+        .form-input {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #D3D3D3;
+            font-size: 16px;
+            width: 80%;
+        }
+        .form-input:focus {
+            outline: none;
+            border: 2px solid #0077CC;
+        }
+        .form-checkbox {
+            margin-top: 20px;
+            display: inline-block;
+        }
+        .form-upload {
+            margin-top: 20px;
+            display: none;
+        }
+        .form-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #0077CC;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .form-button:hover {
+            background-color: #005DA6;
+        }
+        .form-checkbox:checked + .form-upload {
+            display: block;
+        }
+    </style>
 </head>
 <body>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
+        <label class="form-label" for="text_input">Vega-Lite Specification:</label>
+        <textarea class="form-input" name="text_input" id="text_input" cols="30" rows="10" required></textarea>
+        <label class="form-label" for="check_box">Include CSV Data:</label>
+        <input class="form-checkbox" type="checkbox" name="check_box" id="check_box">
+        <div class="form-upload">
+            <label class="form-label" for="csv_upload">CSV Data:</label>
+            <input class="form-input" type="file" name="csv_upload" id="csv_upload">
+        </div>
+        <button class="form-button" type="submit">Convert</button>
     </form>
+    <div id="vega-graph"></div>
+    <script>
+        const checkBox = document.querySelector('#check_box');
+        const csvUpload = document.querySelector('.form-upload');
+        checkBox.addEventListener('change', function() {
+            csvUpload.style.display = this.checked ? 'block' : 'none';
+        });
+
+        let vega_lite_spec = '{{ vega_lite_spec|escapejs }}';
+        vega_lite_spec = vega_lite_spec ? JSON.parse(vega_lite_spec) : null;
+        
+        if (vega_lite_spec) {
+            vegaEmbed('#vega-graph', vega_lite_spec);
+        }
+    </script>
 </body>
 </html>
