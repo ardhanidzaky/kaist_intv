@@ -1,6 +1,7 @@
 import pandas as pd
+import json
 
-from .utils import *
+from .utils import global_utils
 from .bar import utils as bar_utils
 
 def base_router(text_input: str, check_box: bool, data: pd.DataFrame=None):
@@ -15,45 +16,34 @@ def base_router(text_input: str, check_box: bool, data: pd.DataFrame=None):
     Returns:
         None
     """
-
+    data_table = None
     if check_box:
-        data_on_csv(text_input=text_input, data=data)
+        data_table = data
     else:
-        data_on_json(text_input=text_input)
+        data_table = global_utils.create_data_table(vega_json=text_input)
+    
+    encoding_table = global_utils.create_encoding_table(vega_json=text_input)
+    transform_table = None
+    
+    enc_res_table, trans_res_table = transform_router(
+        json.loads(text_input)['mark'], data=data_table,
+        encoding=encoding_table, transform=transform_table)
+    
+    global_utils.combine(
+        data=data_table, encoding=encoding_table)
 
-def transform_router(encoding: pd.DataFrame):
-    return None
+def transform_router(
+        mark_type: str, data: pd.DataFrame,
+        encoding: pd.DataFrame=None, tranform: pd.DataFrame=None):
 
-def data_on_csv(text_input: str, data: pd.DataFrame):
-    """
-    Vega-lite specification pipeline for "data": {"url": "xxx.csv"}.
-
-    Args:
-        text_input (str): A string containing the Vega JSON specification.
-        data (pd.DataFrame): A pandas DataFrame containing the data.
-
-    Returns:
-        None.
-    """
-    encoding_table = create_encoding_table(vega_json=text_input)
-    combine(data=data, encoding=encoding_table)
-
-def data_on_json(text_input: str):
-    """
-    Vega-lite specification pipeline for "data": {"value": xxx}.
-
-    Args:
-        text_input (str): A string containing the Vega JSON specification.
-
-    Returns:
-        None.
-    """
-
-    # Basic tables.
-    data_table = create_data_table(vega_json=text_input)
-    encoding_table = create_encoding_table(vega_json=text_input)
-
-    # Transformed tables.
-    bar_utils.create_data_encoding_agg_table(data=data_table, encoding=encoding_table)
-
-    combine(data=data_table, encoding=encoding_table)
+    if mark_type == 'bar':
+        enc_res_table = bar_utils.create_data_encoding_agg_table(
+            data=data, encoding=encoding)
+        
+        raise RuntimeError("Mark type not supported yet!")
+    elif mark_type == 'point':
+        raise RuntimeError("Mark type not supported yet!")
+    elif mark_type == 'line':
+        raise RuntimeError("Mark type not supported yet!")
+    else:
+        raise RuntimeError("Mark type not supported yet!")

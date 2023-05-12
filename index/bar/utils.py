@@ -23,14 +23,14 @@ def create_data_encoding_agg_table(data: pd.DataFrame, encoding: pd.DataFrame) -
     ]['encoding_value'].values[0]
 
     if aggregated_by == 'max':
-        data.groupby([grouped_by]).max().to_excel('max.xlsx')
+        return data.groupby([grouped_by]).max()
     elif aggregated_by == 'min':
-        data.groupby([grouped_by]).min().to_excel('max.xlsx')
+        return data.groupby([grouped_by]).min()
     elif aggregated_by == 'median':
-        data.groupby([grouped_by]).median().to_excel('max.xlsx')
+        return data.groupby([grouped_by]).median()
     elif aggregated_by == 'count':
-        data.groupby([grouped_by]).count().to_excel('max.xlsx')
+        return data.groupby([grouped_by]).count()
     elif aggregated_by == 'sum':
-        data.groupby([grouped_by]).sum().to_excel('max.xlsx')
+        return data.groupby([grouped_by]).sum()
     else:
-        data
+        raise RuntimeError("Aggregation type not supported yet!")
