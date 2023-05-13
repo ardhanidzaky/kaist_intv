@@ -1,0 +1,14 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": {"url": "data.csv"},
+    "mark": "bar",
+    "encoding": {
+        "x": {
+            "field": "fuel_type"
+        },
+        "y": {
+            "field": "rating",
+            "aggregate": "mean"
+        }
+    }
+}

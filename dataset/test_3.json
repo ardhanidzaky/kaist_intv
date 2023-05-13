@@ -1,0 +1,10 @@
+{
+    "data": {"url": "data/seattle-weather.csv"},
+    "mark": {
+        "type": "line"
+    },
+    "encoding": {
+        "x": {"timeUnit": "year", "field": "date"},
+        "y": {"aggregate": "mean", "field": "temp_max"}
+    }
+}
