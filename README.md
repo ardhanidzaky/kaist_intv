@@ -45,8 +45,5 @@ To use this application, follow these steps:
 
 Then, open your web browser and go to http://localhost:8000/. You should see the homepage of the Vega-lite Specification Converter. Follow the instructions on the page to convert your Vega-Lite specifications.
 
-## License
-This project is licensed under the MIT License - see the LICENSE.md file for details.
-
 ## Dataset
 Dataset used for testing is available on **./dataset**
