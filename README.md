@@ -1,4 +1,4 @@
-# KAIST Interview Preparation
+# KAIST Interview Mini-coding Task
 ## Project 1: Natural Language Tool for Charts
 
 - **Goal**: Extract the displayed data of a Vega-Lite specification as a table as well as the chart encodings (e.g., population → y-length, age → x-position). 

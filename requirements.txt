@@ -2,3 +2,4 @@ django
 pandas
 json
 openpyxl
+numpy

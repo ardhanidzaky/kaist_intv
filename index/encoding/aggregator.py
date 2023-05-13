@@ -1,4 +1,6 @@
 import pandas as pd
+import numpy as np
+
 from ..consts import VEGA_ENCODING_TIMEUNIT_DICT
 
 def basic_aggregation(data: pd.DataFrame, encoding: pd.DataFrame) -> pd.DataFrame:
@@ -31,6 +33,7 @@ def basic_aggregation(data: pd.DataFrame, encoding: pd.DataFrame) -> pd.DataFram
         (encoding['axis'] == aggregate_axis)
     ]['encoding_value'].values[0]
 
+    aggregate_function = 'mean' if 'average' else aggregate_function
     try:
         return data.groupby([group_by_column])[aggregate_value].agg([aggregate_function])
     except:
@@ -77,6 +80,7 @@ def timeunit_aggregation(data: pd.DataFrame, encoding: pd.DataFrame) -> pd.DataF
         (encoding['axis'] == aggregate_axis)
     ]['encoding_value'].values[0]
 
+    aggregate_function = 'mean' if 'average' else aggregate_function
     data[group_by_column] = pd.to_datetime(data[group_by_column])
     try:
         tu_aggregated = data.groupby(
@@ -85,3 +89,18 @@ def timeunit_aggregation(data: pd.DataFrame, encoding: pd.DataFrame) -> pd.DataF
         return tu_aggregated
     except:
         raise RuntimeError("Aggregation type not supported yet!")
+    
+def binning_aggregation(data: pd.DataFrame, encoding: pd.DataFrame) -> pd.DataFrame:
+    aggregate_axis = encoding[encoding['encoding_type'] == 'aggregate']['axis'].values[0]
+    bin_by_axis = 'x' if aggregate_axis == 'y' else 'y'
+    bin_by_column = encoding[
+        (encoding['encoding_type'] == 'field') &
+        (encoding['axis'] == bin_by_axis)
+    ]['encoding_value'].values[0]
+
+    # Binning logic will always assume an equal division by 10 bin.
+    max_val_rounded = int(np.ceil(data[bin_by_column].max()/5)*5)
+    return pd.cut(
+            data[bin_by_column], 
+            bins=np.linspace(0, max_val_rounded, num=11)
+        ).value_counts(sort=False)

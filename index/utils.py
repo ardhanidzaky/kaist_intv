@@ -127,15 +127,20 @@ def create_encoding_agg_table(data: pd.DataFrame, encoding: pd.DataFrame) -> pd.
         RuntimeError: If two encoding aggregations are specified in the encoding DataFrame, or if the
                         specified aggregation type is not supported.
     """
+    num_field = encoding[encoding['encoding_type'] == 'field'].shape[0]
     num_aggregate = encoding[encoding['encoding_type'] == 'aggregate'].shape[0]
     num_timeunit = encoding[encoding['encoding_type'] == 'timeUnit'].shape[0]
+    print(num_field)
+    print(num_aggregate)
 
     enc_res_table = None
 
     if num_aggregate == 1:
+        if num_field == 1:
+            return enc_agg.binning_aggregation(data=data, encoding=encoding)
         if num_timeunit == 0:
-            enc_res_table = enc_agg.basic_aggregation(data=data, encoding=encoding)
-        else:
-            enc_res_table = enc_agg.timeunit_aggregation(data=data, encoding=encoding)
+            return enc_agg.basic_aggregation(data=data, encoding=encoding)
+        if num_timeunit == 1:
+            return enc_agg.timeunit_aggregation(data=data, encoding=encoding)
 
     return enc_res_table
