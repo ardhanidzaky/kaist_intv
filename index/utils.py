@@ -6,6 +6,7 @@ from django.http import HttpResponse
 
 from .consts import AXIS, VEGA_ENCODING
 from .encoding import aggregator as enc_agg
+from .encoding import utils as enc_utils
 
 def convert_datetime_to_str(val):
     """
@@ -74,10 +75,11 @@ def create_encoding_table(vega_json: str) -> pd.DataFrame:
 
     for axs in AXIS:
         for enc in VEGA_ENCODING:
-            if enc in vega_json['encoding'][axs]:
-                axis_list.append(axs)
-                encoding_type_list.append(enc)
-                encoding_value_list.append(vega_json['encoding'][axs][enc])
+            if axs in vega_json['encoding']:
+                if enc in vega_json['encoding'][axs]:
+                    axis_list.append(axs)
+                    encoding_type_list.append(enc)
+                    encoding_value_list.append(vega_json['encoding'][axs][enc])
 
     data = pd.DataFrame({
         'axis': axis_list,
@@ -127,20 +129,17 @@ def create_encoding_agg_table(data: pd.DataFrame, encoding: pd.DataFrame) -> pd.
         RuntimeError: If two encoding aggregations are specified in the encoding DataFrame, or if the
                         specified aggregation type is not supported.
     """
-    num_field = encoding[encoding['encoding_type'] == 'field'].shape[0]
     num_aggregate = encoding[encoding['encoding_type'] == 'aggregate'].shape[0]
-    num_timeunit = encoding[encoding['encoding_type'] == 'timeUnit'].shape[0]
-    print(num_field)
-    print(num_aggregate)
-
-    enc_res_table = None
-
-    if num_aggregate == 1:
-        if num_field == 1:
-            return enc_agg.binning_aggregation(data=data, encoding=encoding)
-        if num_timeunit == 0:
-            return enc_agg.basic_aggregation(data=data, encoding=encoding)
-        if num_timeunit == 1:
-            return enc_agg.timeunit_aggregation(data=data, encoding=encoding)
-
-    return enc_res_table
+    is_bin = enc_utils.check_is_bin(encoding)
+    is_timeunit = enc_utils.check_is_time_unit(encoding)
+    is_third_grouping = enc_utils.check_third_groping(encoding)
+    
+    if num_aggregate > 0:
+        if is_bin:
+            return enc_agg.binning_aggregation(data=data, encoding=encoding, third_grouping=is_third_grouping)
+        if is_timeunit:
+            return enc_agg.timeunit_aggregation(data=data, encoding=encoding, third_grouping=is_third_grouping)
+        else:
+            return enc_agg.basic_aggregation(data=data, encoding=encoding, third_grouping=is_third_grouping)
+    else:
+        raise RuntimeError('Non-aggregation specification not supported yet!')

@@ -1,4 +1,4 @@
-AXIS = ['x', 'y']
+AXIS = ['x', 'y', 'color']
 
 VEGA_ENCODING = [
     'aggregate', 'axis', 'band', 'bin', 'condition', 'datum',
