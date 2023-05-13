@@ -16,7 +16,7 @@
         - [x] Month
         - [x] Date
         - [x] Week
-    - [ ] Encoding: color (3rd grouping)
+    - [x] Encoding: color (3rd grouping)
 - [ ] Transform data based on 'transform'
 
 ## How to Use
@@ -43,3 +43,6 @@ Then, open your web browser and go to http://localhost:8000/. You should see the
 
 ## License
 This project is licensed under the MIT License - see the LICENSE.md file for details.
+
+## Dataset
+Dataset used for testing is available on **./dataset**
