@@ -78,20 +78,12 @@
         </div>
         <button class="form-button" type="submit">Convert</button>
     </form>
-    <div id="vega-graph"></div>
     <script>
         const checkBox = document.querySelector('#check_box');
         const csvUpload = document.querySelector('.form-upload');
         checkBox.addEventListener('change', function() {
             csvUpload.style.display = this.checked ? 'block' : 'none';
         });
-
-        let vega_lite_spec = '{{ vega_lite_spec|escapejs }}';
-        vega_lite_spec = vega_lite_spec ? JSON.parse(vega_lite_spec) : null;
-        
-        if (vega_lite_spec) {
-            vegaEmbed('#vega-graph', vega_lite_spec);
-        }
     </script>
 </body>
 </html>
