@@ -15,12 +15,12 @@ def index(request):
             if checkbox:
                 csv_upload = form.cleaned_data['csv_upload']
                 csv_df = pd.read_csv(csv_upload)
-                base_router(text_input=text_input, check_box=checkbox, data=csv_df)
                 request.session['vega_lite_spec'] = update_data(text_input, csv_df)
+                return base_router(text_input=text_input, check_box=checkbox, data=csv_df)
             else:
-                base_router(text_input=text_input, check_box=checkbox)
                 request.session['vega_lite_spec'] = text_input
-            return redirect('index')
+                return base_router(text_input=text_input, check_box=checkbox)
+        return redirect('index')
     else:
         form = MyForm()
         vega_lite_spec = request.session.get('vega_lite_spec', None)  # Retrieve the spec from the session

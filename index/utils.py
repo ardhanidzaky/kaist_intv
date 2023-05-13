@@ -1,5 +1,8 @@
 import pandas as pd
 import json
+import io
+
+from django.http import HttpResponse
 
 from .consts import AXIS, VEGA_ENCODING
 from .encoding import aggregator as enc_agg
@@ -96,11 +99,18 @@ def combine(data: pd.DataFrame, encoding: pd.DataFrame,
     Returns:
         None.
     """
-    with pd.ExcelWriter('output.xlsx') as writer:
+    excel_buffer = io.BytesIO()
+    with pd.ExcelWriter(excel_buffer) as writer:
         data.to_excel(writer, sheet_name='Data', index=False)
         encoding.to_excel(writer, sheet_name='Encoding', index=False)
         if data_enc_res is not None:
             data_enc_res.to_excel(writer, sheet_name='Data Encoding-transformed')
+    excel_buffer.seek(0)
+
+    response = HttpResponse(excel_buffer.getvalue(),
+                            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename=extracted_table.xlsx'
+    return response
 
 def create_encoding_agg_table(data: pd.DataFrame, encoding: pd.DataFrame) -> pd.DataFrame:
     """

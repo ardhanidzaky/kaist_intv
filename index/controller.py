@@ -25,5 +25,7 @@ def base_router(text_input: str, check_box: bool, data: pd.DataFrame=None):
     enc_res_table = global_utils.create_encoding_agg_table(
             data=data_table, encoding=encoding_table)
     
-    global_utils.combine(
-        data=data_table, encoding=encoding_table, data_enc_res=enc_res_table)
+    return global_utils.combine(
+            data=data_table, encoding=encoding_table, data_enc_res=enc_res_table)
+    
+    
