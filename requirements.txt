@@ -3,4 +3,4 @@ pandas
 openpyxl
 numpy
 altair
-altair_viewer
+altair_viewer==4.8.1
