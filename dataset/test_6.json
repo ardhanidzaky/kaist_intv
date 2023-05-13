@@ -1,15 +1,20 @@
 {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-    "data": {"url": "cars.csv"},
+    "data": {"url": "data.csv"},
     "mark": "bar",
     "encoding": {
         "x": {
-            "field": "engine_displacement",
+            "field": "km_driven",
+            "type": "nominal",
             "bin": true
         },
         "y": {
-            "aggregate": "count"
+            "aggregate": "count",
+            "type": "quantitative"
         },
-        "color": {"field": "fuel_type"}
+        "color": {
+            "field": "seller_type",
+            "type": "nominal"
+        }
     }
 }
