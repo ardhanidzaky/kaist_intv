@@ -1,6 +1,6 @@
 {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-    "data": {"url": "data.csv"},
+    "data": {"url": "cars.csv"},
     "mark": "bar",
     "encoding": {
         "x": {
