@@ -8,7 +8,8 @@
 - [x] Extract raw data (.csv) and encoding.
 - [x] Transform data based on 'encoding' only.
     - [x] Encoding: 'aggregate'.
-        - [x] One column aggregation.
+        - [x] Basic one column aggregation.
+        - [ ] 
     - [x] Encoding: 'timeUnit'.
         - [x] Year
         - [x] Quarter
@@ -17,3 +18,28 @@
         - [x] Week
     - [ ] Encoding: color (3rd grouping)
 - [ ] Transform data based on 'transform'
+
+## How to Use
+This web application allows users to convert Vega-Lite specifications into Vega specifications. It also provides the option to include CSV data in the conversion process.
+
+To use this application, follow these steps:
+
+1. Clone this repository to your local machine using Git.
+`https://github.com/ardhanidzaky/kaist_intv.git`
+
+2. Create a Python virtual environment for the project using your preferred tool (e.g. venv or conda).
+`python3 -m venv myenv`
+
+3. Activate the virtual environment.
+`source myenv/bin/activate`
+
+4. Install the required packages from the requirements.txt file.
+`pip install -r requirements.txt`
+
+5. To run the application, start the development server with the following command:
+`python3 manage.py runserver`
+
+Then, open your web browser and go to http://localhost:8000/. You should see the homepage of the Vega-lite Specification Converter. Follow the instructions on the page to convert your Vega-Lite specifications.
+
+## License
+This project is licensed under the MIT License - see the LICENSE.md file for details.
