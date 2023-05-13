@@ -1,6 +1,5 @@
 django
 pandas
-json
 openpyxl
 numpy
 altair
