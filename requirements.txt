@@ -3,3 +3,5 @@ pandas
 json
 openpyxl
 numpy
+altair
+altair_viewer
