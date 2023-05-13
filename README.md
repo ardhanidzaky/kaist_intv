@@ -8,8 +8,8 @@
 - [x] Extract raw data (.csv) and encoding.
 - [x] Transform data based on 'encoding' only.
     - [x] Encoding: 'aggregate'.
-        - [x] Basic one column aggregation.
-        - [ ] 
+        - [x] Basic one column aggregation (one-x and one-y).
+        - [ ] One column aggregation with Binning (one-x)
     - [x] Encoding: 'timeUnit'.
         - [x] Year
         - [x] Quarter
