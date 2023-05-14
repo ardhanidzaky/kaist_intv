@@ -118,7 +118,6 @@ def combine(data: pd.DataFrame, encoding: pd.DataFrame,
     with pd.ExcelWriter(excel_buffer) as writer:
         data.to_excel(writer, sheet_name='Data', index=False)
         encoding.to_excel(writer, sheet_name='Encoding', index=False)
-        transform['exp'] = transform['exp'].replace('==', 'equal(==)')
         transform.to_excel(writer, sheet_name='Transform Step', index=False)
         if data_enc_res is not None:
             data_enc_res.to_excel(writer, sheet_name='Data Encoding-transformed')

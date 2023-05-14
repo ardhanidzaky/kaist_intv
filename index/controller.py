@@ -24,6 +24,7 @@ def base_router(text_input: str, check_box: bool, data: pd.DataFrame=None):
     if is_transform:
         transform_table = tns_utils.create_transform_table(vega_json=text_input)
         data_table = global_utils.create_transform_agg_table(data=data_table, transform=transform_table)
+        transform_table['exp'] = transform_table['exp'].replace('==', 'equal(==)')
 
     enc_res_table = global_utils.create_encoding_agg_table(
             data=data_table, encoding=encoding_table)
