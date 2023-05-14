@@ -1,28 +1,35 @@
 import pandas as pd
+import json
+import re
 
-def check_for_transform(encoding: pd.DataFrame) -> bool:
+def check_for_transform(vega_json: str) -> bool:
     """
     Checks if the given encoding have transformation needed or not.
 
     Args:
-        encoding (pd.DataFrame): A pandas DataFrame containing the Vega-Lite encoding specification.
+        vega_json (str): A string containing the Vega JSON data object.
 
     Returns:
         bool: True
     """
-    return encoding[encoding['axis'] == 'tranform'].shape[0] > 0
+    return 'transform' in json.loads(vega_json)
 
 def create_transform_table(vega_json: str) -> pd.DataFrame:
     transforms = []
+    vega_json = json.loads(vega_json)
     
     if 'transform' in vega_json:
         for transform in vega_json['transform']:
             if 'filter' in transform:
-                parts = transform['filter'].split('==')
-                transforms.append({
-                    'tns': parts[0].strip().split('.')[1],
-                    'exp': '==',
-                    'val': parts[1].strip().strip("'")
-                })
+                match = re.match(r'datum\.(\w+)\s*([=!><]+)\s*(.*)', transform['filter'])
+                if match:
+                    col, exp, val = match.groups()
+                    transforms.append({
+                        'tns': col,
+                        'exp': exp,
+                        'val': val.strip("'")
+                    })
+                else:
+                    raise RuntimeError("Invalid filter expression: {}".format(transform['filter']))
         
     return pd.DataFrame(transforms)
