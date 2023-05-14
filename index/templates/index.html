@@ -24,8 +24,9 @@
         }
         .form-label {
             font-weight: bold;
-            margin-top: 20px;
-            display: block;
+            margin-top: 10;
+            display: inline-block;
+            vertical-align: middle;
         }
         .form-input {
             margin-top: 10px;
@@ -40,8 +41,8 @@
             border: 2px solid #0077CC;
         }
         .form-checkbox {
-            margin-top: 20px;
             display: inline-block;
+            vertical-align: middle;
         }
         .form-upload {
             margin-top: 20px;
@@ -60,20 +61,54 @@
         .form-button:hover {
             background-color: #005DA6;
         }
-        .form-checkbox:checked + .form-upload {
-            display: block;
+        .step {
+            margin-top: 20px;
+            text-align: left;
+            font-weight: bold;
+        }
+        .step-number {
+            display: inline-block;
+            margin-right: 10px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #0077CC;
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            font-size: 16px;
+            font-weight: normal;
+        }
+        .step-text {
+            display: inline-block;
+            font-size: 16px;
         }
     </style>
 </head>
 <body>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <label class="form-label" for="text_input">Vega-Lite Specification:</label>
+        <!-- <label class="form-label" for="text_input">Vega-Lite Specification:</label> -->
+
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-text">Enter your Vega-lite specification into the text box below.</div>
+        </div>
+
         <textarea class="form-input" name="text_input" id="text_input" cols="30" rows="10" required></textarea>
-        <label class="form-label" for="check_box">Include CSV Data:</label>
-        <input class="form-checkbox" type="checkbox" name="check_box" id="check_box">
+
+        <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-text">Check the box and upload your CSV file if needed.</div>
+            <input class="form-checkbox" type="checkbox" name="check_box" id="check_box">
+        </div>
+
+        <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-text">Upload your CSV file below.</div>
+        </div>
+
         <div class="form-upload">
-            <label class="form-label" for="csv_upload">CSV Data:</label>
             <input class="form-input" type="file" name="csv_upload" id="csv_upload">
         </div>
         <button class="form-button" type="submit">Convert</button>
