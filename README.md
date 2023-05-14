@@ -1,4 +1,8 @@
 # KAIST Interview Mini-coding Task
+
+1. You can try it here https://kaist-intv.vercel.app/. Vega-lite rendering only available on local (uncomment line 21-22 and 25-26 on views.py when running the server).
+2. Tested Vega-lite specification [link](https://docs.google.com/document/d/1C0mPU0KE8B3S817Xvy0DUSsa4MKkqlkK923ftFvbcWA/edit?usp=sharing). CSV data can be downloaded on **./test/data**.
+3. This program will automatically download an excel file with raw data table, encoding table, and transformed data table (encoding transformation).
 ## Project 1: Natural Language Tool for Charts
 
 - **Goal**: Extract the displayed data of a Vega-Lite specification as a table as well as the chart encodings (e.g., population → y-length, age → x-position). 
@@ -44,9 +48,6 @@ To use this application, follow these steps:
 `python3 manage.py runserver`
 
 Then, open your web browser and go to http://localhost:8000/. You should see the homepage of the Vega-lite Specification Converter. Follow the instructions on the page to convert your Vega-Lite specifications.
-
-## License
-This project is licensed under the MIT License - see the LICENSE.md file for details.
 
 ## Dataset
 Dataset used for testing is available on **./dataset**
