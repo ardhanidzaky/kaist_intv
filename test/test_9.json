@@ -1,0 +1,19 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": {"url": "data.csv"},
+    "mark": "bar",
+    "transform": [
+        {"filter": "datum.fuel=='Petrol'"},
+        {"filter": "datum.selling_price>100000"}],
+    "encoding": {
+        "x": {
+            "field": "fuel",
+            "type": "nominal"
+        },
+        "y": {
+            "field": "selling_price",
+            "aggregate": "mean",
+            "type": "quantitative"
+        }
+    }
+}
