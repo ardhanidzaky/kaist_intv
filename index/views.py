@@ -18,12 +18,12 @@ def index(request):
             if checkbox:
                 csv_upload = form.cleaned_data['csv_upload']
                 csv_df = pd.read_csv(csv_upload)
-                # chart = alt.Chart.from_json(update_data(text_input, csv_df))
-                # chart = altair_viewer.display(chart)
+                chart = alt.Chart.from_json(update_data(text_input, csv_df))
+                chart = altair_viewer.display(chart)
                 return base_router(text_input=text_input, check_box=checkbox, data=csv_df)
             else:
-                # chart = alt.Chart.from_json(text_input)
-                # chart = altair_viewer.display(chart)
+                chart = alt.Chart.from_json(text_input)
+                chart = altair_viewer.display(chart)
                 return base_router(text_input=text_input, check_box=checkbox)
         return redirect('index')
     else:

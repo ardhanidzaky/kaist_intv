@@ -50,7 +50,7 @@ def create_data_table(vega_json: str) -> pd.DataFrame:
         vega_json (str): A string containing the Vega JSON data object.
 
     Returns:
-        A pandas DataFrame containing the data from the Vega JSON object.
+        pd.DataFrame: A pandas DataFrame containing the data from the Vega JSON object.
     """
     vega_json = json.loads(vega_json)
     vega_json_data = vega_json['data']['values']
@@ -65,7 +65,7 @@ def create_encoding_table(vega_json: str) -> pd.DataFrame:
         vega_json (str): A string containing the Vega JSON encoding object.
 
     Returns:
-        A pandas DataFrame containing the encoding information from the Vega JSON object.
+        pd.DataFrame: A pandas DataFrame containing the encoding information from the Vega JSON object.
     """
     vega_json = json.loads(vega_json)
 
@@ -95,8 +95,8 @@ def combine(data: pd.DataFrame, encoding: pd.DataFrame,
     Combine two pandas DataFrames and write them to an Excel file.
 
     Args:
-        data (pd.DataFrame): A pandas DataFrame containing the data.
-        encoding (pd.DataFrame): A pandas DataFrame containing the encoding information.
+        data (pd.DataFrame): The DataFrame containing the data to be aggregated.
+        encoding (pd.DataFrame): The DataFrame containing the encoding of the data.
 
     Returns:
         None.
@@ -116,30 +116,27 @@ def combine(data: pd.DataFrame, encoding: pd.DataFrame,
 
 def create_encoding_agg_table(data: pd.DataFrame, encoding: pd.DataFrame) -> pd.DataFrame:
     """
-    Create an encoding aggregation table based on the given data and encoding information.
+    Creates an aggregation table based on the given data and encoding.
 
     Args:
-        data: A pandas DataFrame containing the data to be aggregated.
-        encoding: A pandas DataFrame containing the encoding information.
+        data (pd.DataFrame): The DataFrame containing the data to be aggregated.
+        encoding (pd.DataFrame): The DataFrame containing the encoding of the data.
 
     Returns:
-        A pandas DataFrame containing the encoding aggregation table.
-
-    Raises:
-        RuntimeError: If two encoding aggregations are specified in the encoding DataFrame, or if the
-                        specified aggregation type is not supported.
+        pd.DataFrame: A pandas DataFrame representing the aggregation table.
     """
-    num_aggregate = encoding[encoding['encoding_type'] == 'aggregate'].shape[0]
+    num_aggregate = enc_utils.check_for_aggregation(encoding)
     is_bin = enc_utils.check_is_bin(encoding)
     is_timeunit = enc_utils.check_is_time_unit(encoding)
     is_third_grouping = enc_utils.check_third_groping(encoding)
-    
-    if num_aggregate > 0:
+
+    if num_aggregate:
         if is_bin:
             return enc_agg.binning_aggregation(data=data, encoding=encoding, third_grouping=is_third_grouping)
-        if is_timeunit:
+        elif is_timeunit:
             return enc_agg.timeunit_aggregation(data=data, encoding=encoding, third_grouping=is_third_grouping)
         else:
             return enc_agg.basic_aggregation(data=data, encoding=encoding, third_grouping=is_third_grouping)
     else:
-        raise RuntimeError('Non-aggregation specification not supported yet!')
+        return enc_agg.no_aggregation(data=data, encoding=encoding)
+        

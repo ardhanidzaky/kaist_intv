@@ -14,18 +14,10 @@ def base_router(text_input: str, check_box: bool, data: pd.DataFrame=None):
     Returns:
         None
     """
-    data_table = None
-    if check_box:
-        data_table = data  
-    else:
-        data_table = global_utils.create_data_table(vega_json=text_input)
-    
+    data_table = data if check_box else global_utils.create_data_table(vega_json=text_input)
     encoding_table = global_utils.create_encoding_table(vega_json=text_input)
-    
     enc_res_table = global_utils.create_encoding_agg_table(
             data=data_table, encoding=encoding_table)
     
     return global_utils.combine(
             data=data_table, encoding=encoding_table, data_enc_res=enc_res_table)
-    
-    

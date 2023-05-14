@@ -7,16 +7,20 @@
 - [x] Extract raw data and encoding.
 - [x] Extract raw data (.csv) and encoding.
 - [x] Transform data based on 'encoding' only.
-    - [x] Encoding: 'aggregate'.
-        - [x] Basic one column aggregation (one-x and one-y).
-        - [x] One column aggregation with Binning (one-x)
-    - [x] Encoding: 'timeUnit'.
-        - [x] Year
-        - [x] Quarter
-        - [x] Month
-        - [x] Date
-        - [x] Week
-    - [x] Encoding: color (3rd grouping)
+    - [x] Encoding: Aggregation
+        - [x] Basic two column aggregation (categorical and numerical).
+            - [x] Supported with third grouping (color).
+        - [x] Binning aggregation (categorical with count).
+            - [x] Supported with third grouping (color).
+        - [x] Time unit aggregation.
+            - [x] Year
+            - [x] Quarter
+            - [x] Month
+            - [x] Date
+            - [ ] Supported third grouping (color).
+    - [x] Encoding: No Aggregation
+        - [x] Basic two column (both numerical).
+        - [x] No aggregation with third gruoping (color).
 - [ ] Transform data based on 'transform'
 
 ## How to Use

@@ -7,17 +7,16 @@ def basic_aggregation(data: pd.DataFrame, encoding: pd.DataFrame, third_grouping
     """
     Perform basic aggregation on a given DataFrame based on the encoding.
 
-    Parameters:
-    data (pd.DataFrame): The DataFrame containing the data to be aggregated.
-    encoding (pd.DataFrame): The DataFrame containing the encoding of the data.
-    third_grouping (bool): Whether there's a third grouping (stacking, etc).
+    Args:
+        data (pd.DataFrame): The DataFrame containing the data to be aggregated.
+        encoding (pd.DataFrame): The DataFrame containing the encoding of the data.
+        third_grouping (bool): Whether there's a third grouping (stacking, etc).
 
     Returns:
-    pd.DataFrame: The aggregated DataFrame.
+        pd.DataFrame: The aggregated DataFrame.
 
     Raises:
-    RuntimeError: If the aggregation type is not supported.
-
+        RuntimeError: If the aggregation type is not supported.
     """
     aggregate_axis = encoding[encoding['encoding_type'] == 'aggregate']['axis'].values[0]
     group_by_axis = 'x' if aggregate_axis == 'y' else 'y'
@@ -54,23 +53,15 @@ def timeunit_aggregation(data: pd.DataFrame, encoding: pd.DataFrame, third_group
     Computes an aggregation on a DataFrame by grouping it by a time unit.
 
     Args:
-        data (pd.DataFrame): The input DataFrame to aggregate.
-        encoding (pd.DataFrame): The encoding DataFrame that specifies how to perform the aggregation.
+        data (pd.DataFrame): The DataFrame containing the data to be aggregated.
+        encoding (pd.DataFrame): The DataFrame containing the encoding of the data.
         third_grouping (bool): Whether there's a third grouping (stacking, etc).
 
     Returns:
-        pd.DataFrame: A new DataFrame with the aggregation result.
+        pd.DataFrame: The aggregated DataFrame.
 
     Raises:
-        RuntimeError: If the specified aggregation type is not supported.
-
-    The function retrieves the encoding information from the provided encoding DataFrame to determine how to perform the aggregation.
-    It extracts the group by column, time unit, aggregation function, and aggregation value from the encoding DataFrame.
-    It then converts the group by column to datetime and aggregates the data by grouping it by the specified time unit.
-    The aggregation function is applied to the specified aggregation value column.
-    The function returns a new DataFrame with the aggregation result.
-    If the specified aggregation type is not supported, a RuntimeError is raised.
-
+        RuntimeError: If the aggregation type is not supported.
     """
     aggregate_axis = encoding[encoding['encoding_type'] == 'aggregate']['axis'].values[0]
     group_by_axis = 'x' if aggregate_axis == 'y' else 'y'
@@ -116,6 +107,20 @@ def timeunit_aggregation(data: pd.DataFrame, encoding: pd.DataFrame, third_group
         raise RuntimeError("Aggregation type not supported yet!")
     
 def binning_aggregation(data: pd.DataFrame, encoding: pd.DataFrame, third_grouping: bool) -> pd.DataFrame:
+    """
+    Perform binning aggregation on data.
+
+    Args:
+        data (pd.DataFrame): The DataFrame containing the data to be aggregated.
+        encoding (pd.DataFrame): The DataFrame containing the encoding of the data.
+        third_grouping (bool): Whether there's a third grouping (stacking, etc).
+
+    Returns:
+        pd.DataFrame: The aggregated DataFrame.
+
+    Raises:
+        RuntimeError: If the aggregation type is not supported.
+    """
     temp_data = data.copy()
     aggregate_axis = encoding[encoding['encoding_type'] == 'aggregate']['axis'].values[0]
     bin_by_axis = 'x' if aggregate_axis == 'y' else 'y'
@@ -125,7 +130,7 @@ def binning_aggregation(data: pd.DataFrame, encoding: pd.DataFrame, third_groupi
     ]['encoding_value'].values[0]
 
     # Binning logic will always assume an equal division by 10 bin.
-    max_val_rounded = int(np.ceil(temp_data[bin_by_column].max()/5)*5)
+    max_val_rounded = int(np.ceil(temp_data[bin_by_column].max() / 5) * 5)
     temp_data['bin'] = pd.cut(
         temp_data[bin_by_column], 
         bins=np.linspace(0, max_val_rounded, num=11)
@@ -143,3 +148,21 @@ def binning_aggregation(data: pd.DataFrame, encoding: pd.DataFrame, third_groupi
             return temp_data['bin'].value_counts(sort=False)
     except:
         raise RuntimeError("Aggregation type not supported yet!")
+    
+def no_aggregation(data: pd.DataFrame, encoding: pd.DataFrame) -> pd.DataFrame:
+    """
+    Returns the subset of the input data containing the fields specified in the encoding DataFrame.
+    If third_grouping is True, the column specified as color in the encoding DataFrame is also returned.
+    
+    Args:
+        data (pd.DataFrame): The DataFrame containing the data to be aggregated.
+        encoding (pd.DataFrame): The DataFrame containing the encoding of the data.
+
+    Returns:
+        pd.DataFrame: The subset of the input data containing the fields specified in the encoding DataFrame.
+    """
+    col_lst = list(
+        encoding[encoding['encoding_type'] == 'field']['encoding_value']
+    )
+
+    return data[col_lst]
