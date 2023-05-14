@@ -26,6 +26,11 @@
         - [x] Basic two column (both numerical).
         - [x] No aggregation with third gruoping (color).
 - [ ] Transform data based on 'transform'
+    - [x] Filter
+        - [x] Object.
+        - [x] Numeric.
+        - [ ] Datetime.
+    - [ ] Calculate
 
 ## How to Use
 This web application allows users to convert Vega-Lite specifications into Vega specifications. It also provides the option to include CSV data in the conversion process.

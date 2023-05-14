@@ -1,4 +1,39 @@
 import pandas as pd
+import json
+
+from ..consts import AXIS, VEGA_ENCODING
+
+def create_encoding_table(vega_json: str) -> pd.DataFrame:
+    """
+    Convert a Vega JSON encoding object into a pandas DataFrame.
+
+    Args:
+        vega_json (str): A string containing the Vega JSON encoding object.
+
+    Returns:
+        pd.DataFrame: A pandas DataFrame containing the encoding information from the Vega JSON object.
+    """
+    vega_json = json.loads(vega_json)
+
+    axis_list = []
+    encoding_type_list = []
+    encoding_value_list = []
+
+    for axs in AXIS:
+        for enc in VEGA_ENCODING:
+            if axs in vega_json['encoding']:
+                if enc in vega_json['encoding'][axs]:
+                    axis_list.append(axs)
+                    encoding_type_list.append(enc)
+                    encoding_value_list.append(vega_json['encoding'][axs][enc])
+
+    data = pd.DataFrame({
+        'axis': axis_list,
+        'encoding_type': encoding_type_list,
+        'encoding_value': encoding_value_list
+    })
+
+    return data
 
 def check_is_bin(encoding: pd.DataFrame) -> bool:
     """

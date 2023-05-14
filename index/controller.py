@@ -1,6 +1,8 @@
 import pandas as pd
 
 from . import utils as global_utils
+from .transform import utils as tns_utils
+from .encoding import utils as enc_utils
 
 def base_router(text_input: str, check_box: bool, data: pd.DataFrame=None):
     """
@@ -15,7 +17,13 @@ def base_router(text_input: str, check_box: bool, data: pd.DataFrame=None):
         None
     """
     data_table = data if check_box else global_utils.create_data_table(vega_json=text_input)
-    encoding_table = global_utils.create_encoding_table(vega_json=text_input)
+    encoding_table = enc_utils.create_encoding_table(vega_json=text_input)
+
+    is_transform = tns_utils.check_for_transform(encoding=encoding_table)
+    if is_transform:
+        transform_table = tns_utils.create_transform_table(vega_json=text_input)
+        data_table = global_utils.create_transform_agg_table(data=data_table, transform=transform_table)
+
     enc_res_table = global_utils.create_encoding_agg_table(
             data=data_table, encoding=encoding_table)
     

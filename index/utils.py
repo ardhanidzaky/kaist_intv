@@ -3,10 +3,9 @@ import json
 import io
 
 from django.http import HttpResponse
-
-from .consts import AXIS, VEGA_ENCODING
 from .encoding import aggregator as enc_agg
 from .encoding import utils as enc_utils
+from .transform import transformer as tns_trans
 
 def convert_datetime_to_str(val):
     """
@@ -57,63 +56,6 @@ def create_data_table(vega_json: str) -> pd.DataFrame:
 
     return pd.DataFrame(vega_json_data)
 
-def create_encoding_table(vega_json: str) -> pd.DataFrame:
-    """
-    Convert a Vega JSON encoding object into a pandas DataFrame.
-
-    Args:
-        vega_json (str): A string containing the Vega JSON encoding object.
-
-    Returns:
-        pd.DataFrame: A pandas DataFrame containing the encoding information from the Vega JSON object.
-    """
-    vega_json = json.loads(vega_json)
-
-    axis_list = []
-    encoding_type_list = []
-    encoding_value_list = []
-
-    for axs in AXIS:
-        for enc in VEGA_ENCODING:
-            if axs in vega_json['encoding']:
-                if enc in vega_json['encoding'][axs]:
-                    axis_list.append(axs)
-                    encoding_type_list.append(enc)
-                    encoding_value_list.append(vega_json['encoding'][axs][enc])
-
-    data = pd.DataFrame({
-        'axis': axis_list,
-        'encoding_type': encoding_type_list,
-        'encoding_value': encoding_value_list
-    })
-
-    return data
-
-def combine(data: pd.DataFrame, encoding: pd.DataFrame,
-            data_enc_res: pd.DataFrame):
-    """
-    Combine two pandas DataFrames and write them to an Excel file.
-
-    Args:
-        data (pd.DataFrame): The DataFrame containing the data to be aggregated.
-        encoding (pd.DataFrame): The DataFrame containing the encoding of the data.
-
-    Returns:
-        None.
-    """
-    excel_buffer = io.BytesIO()
-    with pd.ExcelWriter(excel_buffer) as writer:
-        data.to_excel(writer, sheet_name='Data', index=False)
-        encoding.to_excel(writer, sheet_name='Encoding', index=False)
-        if data_enc_res is not None:
-            data_enc_res.to_excel(writer, sheet_name='Data Encoding-transformed')
-    excel_buffer.seek(0)
-
-    response = HttpResponse(excel_buffer.getvalue(),
-                            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = f'attachment; filename=extracted_table.xlsx'
-    return response
-
 def create_encoding_agg_table(data: pd.DataFrame, encoding: pd.DataFrame) -> pd.DataFrame:
     """
     Creates an aggregation table based on the given data and encoding.
@@ -139,4 +81,47 @@ def create_encoding_agg_table(data: pd.DataFrame, encoding: pd.DataFrame) -> pd.
             return enc_agg.basic_aggregation(data=data, encoding=encoding, third_grouping=is_third_grouping)
     else:
         return enc_agg.no_aggregation(data=data, encoding=encoding)
+    
+def create_transform_agg_table(data: pd.DataFrame, transform: pd.DataFrame) -> pd.DataFrame:
+    """
+    Creates a transformed table based on the given data and transform step table.
+
+    Args:
+        data (pd.DataFrame): The DataFrame containing the data to be aggregated.
+        encoding (pd.DataFrame): The DataFrame containing the encoding of the data.
+
+    Returns:
+        pd.DataFrame: A pandas DataFrame representing the transformed table.
+    """
+    temp_data = data.copy()
+    for idx in transform:
+        col, exp, val = transform['tns'][idx], transform['exp'][idx], transform['val'][idx]
+        temp_data = tns_trans.transform_data(data=temp_data, col=col, exp=exp, val=val)
+
+    return temp_data
+
+def combine(data: pd.DataFrame, encoding: pd.DataFrame,
+            data_enc_res: pd.DataFrame):
+    """
+    Combine two pandas DataFrames and write them to an Excel file.
+
+    Args:
+        data (pd.DataFrame): The DataFrame containing the data to be aggregated.
+        encoding (pd.DataFrame): The DataFrame containing the encoding of the data.
+
+    Returns:
+        None.
+    """
+    excel_buffer = io.BytesIO()
+    with pd.ExcelWriter(excel_buffer) as writer:
+        data.to_excel(writer, sheet_name='Data', index=False)
+        encoding.to_excel(writer, sheet_name='Encoding', index=False)
+        if data_enc_res is not None:
+            data_enc_res.to_excel(writer, sheet_name='Data Encoding-transformed')
+    excel_buffer.seek(0)
+
+    response = HttpResponse(excel_buffer.getvalue(),
+                            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename=extracted_table.xlsx'
+    return response
         
