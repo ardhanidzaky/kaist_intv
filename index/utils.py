@@ -94,20 +94,22 @@ def create_transform_agg_table(data: pd.DataFrame, transform: pd.DataFrame) -> p
         pd.DataFrame: A pandas DataFrame representing the transformed table.
     """
     temp_data = data.copy()
-    for idx in transform:
+    for idx in range(transform.shape[0]):
         col, exp, val = transform['tns'][idx], transform['exp'][idx], transform['val'][idx]
         temp_data = tns_trans.transform_data(data=temp_data, col=col, exp=exp, val=val)
 
     return temp_data
 
 def combine(data: pd.DataFrame, encoding: pd.DataFrame,
-            data_enc_res: pd.DataFrame):
+            data_enc_res: pd.DataFrame, transform: pd.DataFrame=pd.DataFrame()):
     """
     Combine two pandas DataFrames and write them to an Excel file.
 
     Args:
         data (pd.DataFrame): The DataFrame containing the data to be aggregated.
         encoding (pd.DataFrame): The DataFrame containing the encoding of the data.
+        data_enc_res (pd.DataFrame): The DataFrame containing the encoded result of the data.
+        transform (pd.DataFrame): The DataFrame containing the transform step of the data.
 
     Returns:
         None.
@@ -116,6 +118,8 @@ def combine(data: pd.DataFrame, encoding: pd.DataFrame,
     with pd.ExcelWriter(excel_buffer) as writer:
         data.to_excel(writer, sheet_name='Data', index=False)
         encoding.to_excel(writer, sheet_name='Encoding', index=False)
+        transform['exp'] = transform['exp'].replace('==', 'equal(==)')
+        transform.to_excel(writer, sheet_name='Transform Step', index=False)
         if data_enc_res is not None:
             data_enc_res.to_excel(writer, sheet_name='Data Encoding-transformed')
     excel_buffer.seek(0)
