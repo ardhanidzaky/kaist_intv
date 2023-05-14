@@ -1,0 +1,9 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": {"url": "cars.csv"},
+    "mark": "point",
+    "encoding": {
+        "x": {"field": "selling_price", "type": "quantitative"},
+        "y": {"field": "km_driven", "type": "quantitative"}
+    }
+}
