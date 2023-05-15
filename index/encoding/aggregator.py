@@ -28,12 +28,13 @@ def basic_aggregation(data: pd.DataFrame, encoding: pd.DataFrame, third_grouping
         (encoding['encoding_type'] == 'aggregate') &
         (encoding['axis'] == aggregate_axis)
     ]['encoding_value'].values[0]
+    print(aggregate_function)
     aggregate_value = encoding[
         (encoding['encoding_type'] == 'field') &
         (encoding['axis'] == aggregate_axis)
     ]['encoding_value'].values[0]
 
-    aggregate_function = 'mean' if 'average' else aggregate_function
+    aggregate_function = 'mean' if aggregate_function == 'average' else aggregate_function
     try:
         if third_grouping:
             third_group_column = encoding[
@@ -44,6 +45,7 @@ def basic_aggregation(data: pd.DataFrame, encoding: pd.DataFrame, third_grouping
             table = table.reset_index()
             return table.pivot_table(index=group_by_column, columns=third_group_column, values=aggregate_function)
         else:
+            print(data.groupby([group_by_column])[aggregate_value].agg([aggregate_function]))
             return data.groupby([group_by_column])[aggregate_value].agg([aggregate_function])
     except:
         raise RuntimeError("Aggregation type not supported yet!")
@@ -82,7 +84,7 @@ def timeunit_aggregation(data: pd.DataFrame, encoding: pd.DataFrame, third_group
         (encoding['axis'] == aggregate_axis)
     ]['encoding_value'].values[0]
 
-    aggregate_function = 'mean' if 'average' else aggregate_function
+    aggregate_function = 'mean' if aggregate_function == 'average' else aggregate_function
     data[group_by_column] = pd.to_datetime(data[group_by_column])
     try:
         if third_grouping:
